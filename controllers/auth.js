@@ -5,7 +5,7 @@ const users = require('../db/users.json');
 
 
 // funzione per generare i token
-const generateToken = (payload, expiresIn = "10s") => {
+const generateToken = (payload, expiresIn = "1h") => {
     //creo token, gli passo il jwt con sign e payload + chiave segreta registrata in .env
     const token = jwt.sign(payload, process.env.JWT_AUTH, {expiresIn});
     return token;
@@ -32,7 +32,7 @@ const login = (req, res) => {
 }
 
 //middleware per verificare il token
-const authenticateWithJWT = (req,res,next) => {
+const authenticateWithJWT = (req, res, next) => {
     //controlliamo se è passato il parametro del token
     const { authorization } = req.headers;
     if(!authorization) {
