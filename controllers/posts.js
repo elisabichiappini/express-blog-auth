@@ -6,26 +6,30 @@ const index = (req, res) => {
     res.format({
         html: () => {
             const post = posts.find(p => p.slug === req.params.slug);
-            if(!post) {
+            if (!post) {
                 return res.status(404).send('<h1>non ci sono posts</h1>')
             }
-            const html = `
-            <div>
-            <h2>${post.title}</h2>
-            <p>${post.content}</p>
-            <img width="200" src=${`/${post.image}`}/>
-            <p>${posts.tags.map(t => `<span class="tag">#${t.toLowerCase().replaceAll(' ', '-')}</span>`).join(' ')}</p>
-            </div>`;
+            let html = '<ul>';
+            posts.forEach(post => {
+                html += `
+                <li>
+                    <h2>${post.title}</h2>
+                    <p>${post.content}</p>
+                    <img width="200" src=${`/${post.image}`}/>
+                    <p>${post.tags.map(t => `<span class="tag">#${t.toLowerCase().replaceAll(' ', '-')}</span>`).join(' ')}</p>
+                </li>`
+            });
+            html += '</ul>';
             res.send(html);
         },
         json: () => {
             const post = posts.find(p => p.slug === req.params.slug);
-            if(!post) {
+            if (!post) {
                 return res.status(404).json({
                     data: null,
                     error: 'Posts non trovato'
                 })
-            }
+            };
             res.json({
                 data: post,
                 count: posts.length,
@@ -38,8 +42,32 @@ const index = (req, res) => {
 const show = (req, res) => {
     res.format({
         html: () => {
-            let html = `<ul>`;
-
+            const post = posts.find(p => p.slug === req.params.slug);
+            if (!post) {
+                return res.status(404).send('<h1>non ci sono posts</h1>')
+            }
+            const html = `
+            <div>
+            <h2>${post.title}</h2>
+            <p>${post.content}</p>
+            <img width="200" src=${`/${post.image}`}/>
+            <p>${post.tags.map(t => `<span class="tag">#${t.toLowerCase().replaceAll(' ', '-')}</span>`).join(' ')}</p>
+            </div>`;
+            res.send(html);
+        },
+        json: () => {
+            const post = posts.find(p => p.slug === req.params.slug);
+            if (!post) {
+                return res.status(404).json({
+                    data: null,
+                    error: 'Posts non trovato'
+                })
+            };
+            res.json({
+                data: post,
+                count: posts.length,
+                error: null
+            })
         }
     })
 }
