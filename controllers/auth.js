@@ -1,3 +1,5 @@
+const jwt = require("jsonwebtoken");
+
 // funzione per generare i token
 const generateToken = (payload, expiresIn = "10s") => {
 
