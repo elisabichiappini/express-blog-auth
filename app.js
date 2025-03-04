@@ -10,12 +10,16 @@ const auth = require('./controllers/auth.js');
 //middleware per public
 app.use(express.static("./public"));
 
+//la chiamata di login non deve essere protetta da authwithjwt perchè l'area di accesso alle rotte successive
+app.post('/login', express.json(), auth.login);
+
+//inserisco middleware auth
+app.use(auth.authenticateWithJWT);
+
 //rotta /
 app.get("/", (req, res) => {
     res.send("<h1>Benvenuto nel mio sito di blog</h1>");
 });
-
-app.post('/login', express.json(), auth.login);
 
 app.use("/posts", postsRouter);
 
