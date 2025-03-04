@@ -51,7 +51,7 @@ const show = (req, res) => {
             <div>
             <h2>${post.title}</h2>
             <p>${post.content}</p>
-            <img width="200" src=${`/${post.image}`}/>
+            <img width="200" src="${`/${post.image}`}"/>
             <p>${post.tags.map(t => `<span class="tag">#${t.toLowerCase().replaceAll(' ', '-')}</span>`).join(' ')}</p>
             </div>`;
             res.send(html);
