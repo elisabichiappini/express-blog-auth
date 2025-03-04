@@ -5,6 +5,7 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 3000;
 const postsRouter = require("./routers/posts.js");
+const auth = require('./controllers/auth.js');
 
 //middleware per public
 app.use(express.static("./public"));
@@ -14,7 +15,9 @@ app.get("/", (req, res) => {
     res.send("<h1>Benvenuto nel mio sito di blog</h1>");
 });
 
-app.use("/posts", postsRouter)
+app.post('/login', auth.login);
+
+app.use("/posts", postsRouter);
 
 app.listen(port, () => {
     console.log(`Server avviato su http://localhost:3000`);
