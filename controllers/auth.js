@@ -11,7 +11,13 @@ const generateToken = (payload, expiresIn = "10s") => {
 
 //controller per generare il token 
 const login = (req, res) => {
-    const token = generateToken({id, username});
+    const {username, password} = req.body;
+
+    if(!username || !password) {
+        return res.status(400).send('Inserire tutti i dati');
+    }
+    // const token = generateToken({id, username});
+    res.end();
 }
 
 //middleware per verificare il token

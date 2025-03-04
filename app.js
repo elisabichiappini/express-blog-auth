@@ -15,7 +15,7 @@ app.get("/", (req, res) => {
     res.send("<h1>Benvenuto nel mio sito di blog</h1>");
 });
 
-app.post('/login', auth.login);
+app.post('/login', express.json(), auth.login);
 
 app.use("/posts", postsRouter);
 
