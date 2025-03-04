@@ -2,34 +2,49 @@ let posts = require("../db/posts.json");
 const path = require("path");
 const fs = require("fs");
 
-const show = (req, res) => {
+const index = (req, res) => {
     res.format({
         html: () => {
-            let html = '<ul>';
-            posts.forEach(post => {
-                html += `
-            <li>
-                <h3>${post.title}</h3>
-                <p>${post.content}</p>
-                <img width="200px" src=${`/${post.image}`}/>
-                <h6>tags: ${post.tags}</h6>
-                <a href="/${post.immagine}" target="_blank"> Visualizza immagine</a> 
-                <a href="/posts/${post.slug}/download" target="_blank"> Scarica immagine </a>
-            </li>`;
-        });
-            html += '</ul>';
+            const post = posts.find(p => p.slug === req.params.slug);
+            if(!post) {
+                return res.status(404).send('<h1>non ci sono posts</h1>')
+            }
+            const html = `
+            <div>
+            <h2>${post.title}</h2>
+            <p>${post.content}</p>
+            <img width="200" src=${`/${post.image}`}/>
+            <p>${posts.tags.map(t => `<span class="tag">#${t.toLowerCase().replaceAll(' ', '-')}</span>`).join(' ')}</p>
+            </div>`;
             res.send(html);
         },
         json: () => {
+            const post = posts.find(p => p.slug === req.params.slug);
+            if(!post) {
+                return res.status(404).json({
+                    data: null,
+                    error: 'Posts non trovato'
+                })
+            }
             res.json({
-                data: posts,
-                count: posts.length
+                data: post,
+                count: posts.length,
+                error: null
             })
         }
     })
 };
 
-const  addPost = (newPost) => {
+const show = (req, res) => {
+    res.format({
+        html: () => {
+            let html = `<ul>`;
+
+        }
+    })
+}
+
+const addPost = (newPost) => {
     const filePath = path.join(process.cwd(), './db/posts.json');
     const newPosts = [...posts, newPost];
     fs.writeFileSync(filePath, JSON.stringify(newPosts));
@@ -37,24 +52,24 @@ const  addPost = (newPost) => {
 }
 
 const store = (req, res) => {
-    const { title, content, tags} = req.body;
+    const { title, content, tags } = req.body;
     //step 1 leggere il contenuto del body, ok router.use per il parser del body
     // 2 fare i controlli di validità del body, 
     ['title', 'content'].forEach(stringKey => {
         const value = req.body[stringKey];
-        if(!value || typeof value !== 'string' || value.trim().replaceAll('/','').length === 0) {
+        if (!value || typeof value !== 'string' || value.trim().replaceAll('/', '').length === 0) {
             return res.status(400).send(`Il ${value} non è valido`);
         }
     });
-    if(!tags || !Array.isArray(tags) || tags.length === 0) {
+    if (!tags || !Array.isArray(tags) || tags.length === 0) {
         return res.status(400).send(`Tags non è valido`);
     };
 
     const newPost = {
-        title, 
-        content, 
+        title,
+        content,
         tags
-    }; 
+    };
 
     addPost(newPost);
     //SE non è valido segnaliamo errore 400, ALTR salviamo nel file.json il nuovo post
@@ -77,7 +92,7 @@ const destroy = (req, res) => {
 };
 
 module.exports = {
-    show,
+    index,
     store,
     destroy,
 }
