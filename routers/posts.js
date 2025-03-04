@@ -13,6 +13,7 @@ router.use(express.urlencoded({extended: true}));
 //rotta /posts = qui decidiamo la rotta e cosa andrà ad eseguire
 router.get("/", postsController.index);
 router.post("/", postsController.store);
+router.get("/:slug", postsController.show);
 router.delete("/:slug", postSlugExist, postsController.destroy);
 
 //per esportazine
