@@ -50,8 +50,24 @@ const authenticateWithJWT = (req, res, next) => {
     //controlliamo il token e gli passiamo la stringa, la parola segreta, e una callback function che viene eseguita alla fine della verifica, se la verifica va a buon fine il nostro payload che è il nostro user sarà buono, altrimentni il payload non c'è e avremo un errore
     jwt.verify(token, process.env.JWT_AUTH, (error, payload) => {
         if(error) {
-            return res.status(403).send('token error');
+            let message = "accesso vietato: ";
+            switch(error.message) {
+                case "jwt expired": 
+                    message += "token scaduto"
+                break;
+                case "jwt marlformed":
+                    message += "token scritto male";
+                break;
+                default: 
+                    message += "sei un hacker maledetto";
+                break;
+            }
+            return res.status(403).send(message);
         }
+
+
+
+
         //se c'è ci salviamo il req.user = payload
         req.user = payload;
         next();
