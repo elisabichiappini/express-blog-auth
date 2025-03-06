@@ -36,7 +36,7 @@ const authenticateWithJWT = (req, res, next) => {
     //controlliamo se è passato il parametro del token
     const { authorization } = req.headers;
     if(!authorization) {
-        res.format({
+        return res.format({
             html: () => {
                 return res.status(401).send('<p>non sei loggato</p>');
             },
