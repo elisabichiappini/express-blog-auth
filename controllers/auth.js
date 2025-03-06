@@ -65,16 +65,35 @@ const authenticateWithJWT = (req, res, next) => {
             return res.status(403).send(message);
         }
 
-
-
-
         //se c'è ci salviamo il req.user = payload
         req.user = payload;
         next();
     })
 }
 
+//middleware epr proteggere rotte admin
+const authenticateAdmin = (req, res, next) => {
+    const user = users.find(u => u.id === req.user.id);
+    if(!user.admin) {
+        return req.format({
+            html: () => {
+                return res.status(403).send("<h2>non sei un admin</h2>");
+            },
+            json: () => {
+                return res.status(403).json({
+                    error: 'non sei un admin'
+                })
+            }
+        })
+    }
+    req.user.admin = true;
+    
+    next();
+}
+
+
 module.exports = {
     login,
-    authenticateWithJWT
+    authenticateWithJWT,
+    authenticateAdmin
 }
